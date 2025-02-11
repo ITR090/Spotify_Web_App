@@ -1,0 +1,78 @@
+
+const express = require('express')
+const dotenv = require('dotenv')
+const querystring = require('querystring');
+const axios = require('axios');
+const cors = require('cors')
+
+// init application
+const app = express()
+// middleware
+app.use(cors({}))
+app.use(express.json())  // usefull for mobile application 
+app.use(express.urlencoded({ extended: true })) // usefull for form submtion data
+
+// env
+dotenv.config()
+console.log(`Listening on port ${process.env.PORT}. Go /login to initiate authentication flow.`)
+app.listen(process.env.PORT)
+
+// routes
+
+/**
+ * node backend will send to spoitfy to redirect the  authorization URL
+ * if everything are fine (client id correct) then spoitfy will look for a callback URL
+ * the callback URL will send client secrt to spoify to get the acess token
+ * after getting access token the callback URL will redifrect to client app
+ * */
+
+app.get('/login', (req, res) => {
+
+    var scope = 'user-read-private user-read-email user-top-read user-follow-read user-library-read playlist-modify-private playlist-modify-public';
+    res.redirect(process.env.AUTHORIZATION + querystring.stringify({
+        response_type: 'code',
+        client_id: process.env.CLIENT_ID,
+        redirect_uri: process.env.REDIRECT_URI,
+        scope:scope
+    }))
+
+})
+
+
+app.get('/callback', (req, res) => {
+
+    let code = req.query.code || null;
+
+    try {
+        axios.post('https://accounts.spotify.com/api/token',
+            querystring.stringify({
+                grant_type: 'authorization_code',
+                code: code,
+                redirect_uri: process.env.REDIRECT_URI,
+            }), {
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': `Basic ${btoa(`${process.env.CLIENT_ID}:${process.env.CLIENT_SECRET}`)}`
+            }
+        }
+        ).then((data) => {
+
+            let response = data.data
+            console.log(response.access_token)
+            // res.cookie("spotify_access_token", response.access_token, {
+            //     httpOnly: true,  
+            //     secure: process.env.NODE_ENV === "production", // site has to be https
+            //     sameSite: "Strict", // to prefent CRF attacks
+            //     maxAge: 3600
+            //   });
+
+            // Redirect back to your frontend
+            res.redirect("http://localhost:5173/" + '?access_token=' + response.access_token);
+        })
+    } catch (error) {
+        console.log("error" + error)
+    }
+})
+
+
+
