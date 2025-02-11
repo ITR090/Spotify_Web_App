@@ -59,13 +59,7 @@ app.get('/callback', (req, res) => {
 
             let response = data.data
             console.log(response.access_token)
-            // res.cookie("spotify_access_token", response.access_token, {
-            //     httpOnly: true,  
-            //     secure: process.env.NODE_ENV === "production", // site has to be https
-            //     sameSite: "Strict", // to prefent CRF attacks
-            //     maxAge: 3600
-            //   });
-
+           
             // Redirect back to your frontend
             res.redirect("http://localhost:5173/" + '?access_token=' + response.access_token);
         })
