@@ -10,8 +10,9 @@ export default function useFetchPost() {
     const ctx = useContext(StoreContext)
 
     const handlePost=  async (url,data)=> {
-
-        if(ctx.authenticated && ctx.token){
+    //  ctx.authenticated && ctx.token
+    let token = localStorage.getItem('userToken').token
+        if(token){
            try {
 
             const response = await fetch(url,{

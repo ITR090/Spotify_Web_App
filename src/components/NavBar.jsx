@@ -15,7 +15,7 @@ export default function NavBar({}) {
     const ctxSpotify = useContext(SpotifyContext)
     
     const {data : userProfile} = useFetch('https://api.spotify.com/v1/me') 
-    console.log('navbar')
+   
 
     useEffect(()=>{
         ctxSpotify.saveUserDetaild(userProfile)

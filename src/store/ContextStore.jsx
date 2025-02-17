@@ -15,7 +15,7 @@ import { getToken } from "../utilities/getAccessToken";
 
 const StoreContextProvider = (props)=>{
 
-    const [token,setToken] = useState('')
+    const [token,setToken] = useState(null)
     const [authenticated, setAuthenticated] = useState(false)
 
     const [modalState, setModalState] = useState(false);

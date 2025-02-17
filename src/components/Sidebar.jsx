@@ -23,8 +23,9 @@ export default function Sidebar() {
     // post
     const { handlePost } = useFetchPost()
     // state
-    const [modalState, setModalState] = useState(false);
-
+    const [createPlayListModalState, setCreatePlayListModalState] = useState(false);
+    
+   
 
     const filters = {
         playlists: playlist,
@@ -52,29 +53,10 @@ export default function Sidebar() {
            })
     }
 
-
-
-    let displayCurrectFilter;
-
-    if (currentFilter.type == 'Playlist') {
-        displayCurrectFilter = <DisplayType type='playlists' items={playlist?.items} />
-    } else if (currentFilter.type == 'Artists') {
-        displayCurrectFilter = <DisplayType type='artists' items={followedArtists?.artists?.items} />
-    } else if (currentFilter.type == 'Albums') {
-        displayCurrectFilter = <DisplayType type='albums' items={userSavedAlbums?.items} />
-    } else {
-
-    }
-
     const onClickFliter = (filter_type) => {
 
         switch (filter_type) {
-            case 'X':
-                setCurrentFilter({
-                    type: 'X',
-                    data: filters.all
-                })
-                return;
+
             case 'Playlist':
                 setCurrentFilter({
                     type: "Playlist",
@@ -99,6 +81,18 @@ export default function Sidebar() {
         }
     }
 
+
+    let displayCurrectFilter;
+
+    if (currentFilter.type == 'Playlist') {
+        displayCurrectFilter = <DisplayType type='playlists' items={playlist?.items} />
+    } else if (currentFilter.type == 'Artists') {
+        displayCurrectFilter = <DisplayType type='artists' items={followedArtists?.artists?.items} />
+    } else {
+        displayCurrectFilter = <DisplayType type='albums' items={userSavedAlbums?.items} />
+    } 
+
+   
     return (
         <>
             <div className='w-1/3 px-8 py-16 bg-main-bg-gray text-white rounded-r-xl overflow-y-auto no-scrollbar'>
@@ -108,26 +102,25 @@ export default function Sidebar() {
                     </span>
                     <SecondaryButton
                         id='plus'
-                        clickFun={()=>setModalState(true)}
+                        clickFun={()=>setCreatePlayListModalState(true)}
                         type='button'
                         data-modal-target="default-modal" data-modal-toggle="default-modal"
                     >
-                        <h3 className='text-lg font-bold'>+</h3>
+                        <h6 className='text-lg font-bold'>+</h6>
                     </SecondaryButton>
                 </div>
 
                 <div className='flex'>
-                    {/* <button id='cancle'  onClick={()=>onClickFliter('X')} className='bg-main-bg-gray text-sm rounded-full p-1 mr-2 w-10 focus:bg-violet-700' type="button">X</button> */}
                     <SecondaryButton id='Artists' clickFun={() => onClickFliter('Artists')} type="button">Artists</SecondaryButton>
                     <SecondaryButton id='Playlist' clickFun={() => onClickFliter('Playlist')} type="button">Playlist</SecondaryButton>
                     <SecondaryButton id='Albums' clickFun={() => onClickFliter('Albums')} type="button">Albums</SecondaryButton>
                 </div>
 
                 <div className='my-4'>
-                    {(ctx.authenticated && currentFilter) && displayCurrectFilter}
+                    {(currentFilter) && displayCurrectFilter}
                 </div>
             </div>
-            <Modal open={modalState} onClose={setModalState} onClick={createPlayList} />
+            <Modal type='create-playlist' open={createPlayListModalState}  onClose={setCreatePlayListModalState} onClick={createPlayList} />
         </>
     )
 }

@@ -1,22 +1,35 @@
-import React from 'react'
-import { useParams } from 'react-router-dom'
+import React, { useState } from 'react'
+import { Link, useParams } from 'react-router-dom'
 // UI
 import Container from '../UI/Container'
 // Hooks
 import useFetch from '../hooks/useFetch'
 // icon
 import verified from '../assets/icons/verified.png'
-import { millisToMinutesAndSeconds } from '../utilities/millisToMinutesAndSeconds'
 // utils
+import { millisToMinutesAndSeconds } from '../utilities/millisToMinutesAndSeconds'
+// UI
+import Slider from '../components/Slider'
+import SecondaryButton from '../UI/Buttons/SecondaryButton'
+import Modal from '../UI/Modal'
+// Import Swiper React components
+import { SwiperSlide } from 'swiper/react';
+// Import Swiper styles
+import 'swiper/css';
+import 'swiper/css/navigation';
 
 
 export default function ArtistPage() {
 
     const params = useParams()
-    const { data: artist } = useFetch(`https://api.spotify.com/v1/artists/${params.id}`, params.id)
-    const { data: topTracks } = useFetch(`https://api.spotify.com/v1/artists/${params.id}/top-tracks?market=SA`,params.id)
-    const {data: albmus} =useFetch(`https://api.spotify.com/v1/artists/${params.id}/albums?include_groups=album&market=SA`)
-    
+    const { data: artist, errors: errorsArtist } = useFetch(`https://api.spotify.com/v1/artists/${params.id}`, params.id)
+    const { data: topTracks, errors: errorsTopTracks } = useFetch(`https://api.spotify.com/v1/artists/${params.id}/top-tracks?market=SA`, params.id)
+    const { data: albmus, errors: albmusErrors } = useFetch(`https://api.spotify.com/v1/artists/${params.id}/albums?include_groups=album&market=US`, params.id)
+
+    if (errorsArtist && errorsTopTracks && albmusErrors) {
+        return <Modal type='token-expired' open={true} />
+    }
+
     return (
         <Container>
             {/* start */}
@@ -39,21 +52,17 @@ export default function ArtistPage() {
             <div className='mt-5'>
                 <h3 className='capitalize text-2xl font-bold'>Popular</h3>
                 <div className='flex-col mt-5'>
-                    {topTracks?.tracks?.map((track,index) =>
+                    {topTracks?.tracks?.map((track, index) =>
                         <div key={track?.id} className='flex justify-between items-center hover:bg-light-gray-hover p-2 rounded-lg'>
                             <div>
                                 <div>
-                                    {/* <img src={track} /> */}
+
                                     <div className='flex items-center gap-3'>
-                                        <p className='font-medium'>{index+1}</p>
+                                        <p className='font-medium'>{index + 1}</p>
                                         <h6 className='font-medium hover:underline'>{track?.name}</h6>
                                     </div>
                                 </div>
-                                {/* {album?.artists.map(artist =>
-                                    <>
-                                        <span className='text-light-gray font-medium hover:underline'>{artist?.name}</span>
-                                    </>
-                                )} */}
+
                             </div>
                             <div>
                                 <p className='text-light-gray font-medium'>{millisToMinutesAndSeconds(track?.duration_ms)}</p>
@@ -63,8 +72,28 @@ export default function ArtistPage() {
             </div>
             {/* end */}
 
+            {/* START */}
 
+            <div className='mt-5'>
+                <h3 className='capitalize text-2xl font-bold mb-5'>Discography</h3>
+                <SecondaryButton>Albums</SecondaryButton>
+                <SecondaryButton>Singles and EPs</SecondaryButton>
 
+                <div className='mt-5'>
+                    <Slider>
+                        {albmus && albmus.items.map((albmu => <SwiperSlide style={{ width: '12%', height: 'auto' }}>
+                            <Link to={`/album/${albmu.id}`}>
+                                <div key={albmu.id} className='rounded-lg hover:bg-light-gray-hover p-1'>
+                                    <img src={albmu?.images[0].url} className='rounded-lg w-48' />
+                                    <h5 className='mt-3'>{albmu.name}</h5>
+                                </div>
+                            </Link>
+                        </SwiperSlide>))}
+                    </Slider>
+                </div>
+            </div>
+
+            {/* end */}
         </Container>
     )
 }

@@ -10,23 +10,22 @@ import MainPage from '../pages/MainPage'
 import ArtistPage from '../pages/ArtistPage'
 import AccountPage from '../pages/AccountPage'
 import PlaylistPage from '../pages/PlaylistPage'
-
+import TrackPage from '../pages/TrackPage'
+// utils
+import { checkUserToken } from '../utilities/checkUserToken'
 
 export const routers_definitions2 = createBrowserRouter([   
     {
         path:'/',
         element: <Layout/>,
         errorElement:<ErrorPage/>,
-        loader : async()=>{
-        //     const response= await fetch('https://jsonplaceholder.typicode.com/todos/1')
-        //    const responseData = await response.json()
-        //    return responseData;
-        },
+        // loader : checkUserToken,
         children:[
             {path:'/',  element: <MainPage/>},
             {path:'/album/:id' , element:<AlbumPage/>},
             {path:'/artist/:id' , element:<ArtistPage/>},
             {path:'/playlist/:id' , element:<PlaylistPage/>},
+            {path:'/track/:id', element:<TrackPage/>}
         ]
     },
     {
@@ -40,12 +39,3 @@ export const routers_definitions2 = createBrowserRouter([
         element:<AccountPage/>
     }
 ])
-
-
-
-
-// export default function routers() {
-//   return (
-//     <div>routers</div>
-//   )
-// }

@@ -14,7 +14,7 @@ dist-ssr
 *.local
 backend/node_modules
 backend/.env
-src/utilities/getAccessToken
+src/utilities/getAccessToken.js
 
 # Editor directories and files
 .vscode/*

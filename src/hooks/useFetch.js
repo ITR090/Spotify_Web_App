@@ -6,38 +6,46 @@ export default function useFetch(url,dependency){
 
     
     const [fetchedData,setFetchedData] =useState()
-    const ctx = useContext(StoreContext)
+    const [Errors,setErrors] =useState()
     
+    const ctx = useContext(StoreContext)
+   
         useEffect(()=>{
             async function getAllData(){
                
                 if (!ctx.token) {
                     let url = new URL(window.location.href)
                     let token = url.searchParams.get('access_token')
-                    ctx.setUserToken(token)
-                    ctx.setAuthenticated(true)
+                    window.history.pushState({},null,'/')
+                    let localhostToken= localStorage.getItem('userToken')
+                    if(!localhostToken){
+                        localStorage.setItem('userToken',JSON.stringify({token:token}))
+                    }
                   }
-        
-                if(ctx.authenticated && ctx.token){
+                  const token =  JSON.parse(localStorage.getItem('userToken')).token
+                  ctx.setUserToken(token)
+                 
+                if(token){
                     try {
                         
                         const response = await fetch(url, {
                             headers: {
-                                'Authorization': `Bearer ${ctx.token}`
+                                'Authorization': `Bearer ${token}`
                             }
                         })
 
+                        // token exipred
                         if (response.status == 401) {
-                            throw response.status
+                            throw ('Unauthorized please login')
                         }
-                        
+                        // any issues
                         if(!response.ok){
-                            throw new Error(response.status)
+                            throw ('Please try again later')
                         }
                         const responseData = await response.json();
                         setFetchedData(responseData)
                     } catch (error) {
-                        console.log("error: "+error.status)
+                       setErrors(error)
                     }
                 }
             }
@@ -47,7 +55,8 @@ export default function useFetch(url,dependency){
 
         return {
             data: fetchedData,
-            setFetchedData,setFetchedData
+            setFetchedData,setFetchedData,
+            errors:Errors
         }
 
 }

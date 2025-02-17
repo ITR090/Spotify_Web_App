@@ -6,6 +6,7 @@ import useFetch from '../hooks/useFetch'
 import { SpotifyContext } from '../store/SpotifyStore'
 // UI
 import Container from '../UI/Container'
+import Modal from '../UI/Modal'
 // Utils
 import { millisToMinutesAndSeconds } from '../utilities/millisToMinutesAndSeconds'
 
@@ -14,7 +15,11 @@ export default function PlaylistPage() {
 
     const ctxSpotify = useContext(SpotifyContext)
     const params = useParams()
-    const { data: playlist } = useFetch(`https://api.spotify.com/v1/playlists/${params.id}?market=SA`)
+    const { data: playlist, errors: playlistErrors } = useFetch(`https://api.spotify.com/v1/playlists/${params.id}?market=SA`)
+    if (playlistErrors) {
+        return <Modal type='token-expired' open={true} />
+    }
+
     return (
         <Container>
             {/* start */}
@@ -43,16 +48,16 @@ export default function PlaylistPage() {
                 <hr />
                 <div className='flex-col mt-5'>
                     {playlist?.tracks?.items.map((track, index) =>
-                        <div className='flex justify-between items-center hover:bg-light-gray-hover p-2 rounded-lg'>
-                                <div className='flex justify-end items-center gap-3'>
-                                        <p className='text-sm font-medium'>{index + 1}</p>
-                                           <img src={track?.track?.album?.images[2]?.url}/> 
-                                           <h6 className='text-sm font-medium hover:underline'>{track?.track?.name}</h6>
-                                        <p className='text-sm font-normal hover:underline'>{track?.track?.album.name}</p>
-                                        <p>{track?.added_at}</p>
-                                        <p>{millisToMinutesAndSeconds(track?.track?.duration_ms)}</p>
-                                </div>
-                                {/* {track?.track.map(song => <span className='text-light-gray font-medium hover:underline'>{song?.name}</span>)} */}
+                        <div key={index + 1} className='flex justify-between items-center hover:bg-light-gray-hover p-2 rounded-lg'>
+                            <div className='flex justify-end items-center gap-3'>
+                                <p className='text-sm font-medium'>{index + 1}</p>
+                                <img src={track?.track?.album?.images[2]?.url} />
+                                <h6 className='text-sm font-medium hover:underline'>{track?.track?.name}</h6>
+                                <p className='text-sm font-normal hover:underline'>{track?.track?.album.name}</p>
+                                <p>{track?.added_at}</p>
+                                <p>{millisToMinutesAndSeconds(track?.track?.duration_ms)}</p>
+                            </div>
+                            {/* {track?.track.map(song => <span className='text-light-gray font-medium hover:underline'>{song?.name}</span>)} */}
                         </div>)}
                 </div>
 

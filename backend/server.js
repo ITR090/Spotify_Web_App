@@ -8,7 +8,7 @@ const cors = require('cors')
 // init application
 const app = express()
 // middleware
-app.use(cors({}))
+app.use(cors({origin: "http://localhost:5173"}))
 app.use(express.json())  // usefull for mobile application 
 app.use(express.urlencoded({ extended: true })) // usefull for form submtion data
 
@@ -16,6 +16,7 @@ app.use(express.urlencoded({ extended: true })) // usefull for form submtion dat
 dotenv.config()
 console.log(`Listening on port ${process.env.PORT}. Go /login to initiate authentication flow.`)
 app.listen(process.env.PORT)
+
 
 // routes
 
@@ -26,14 +27,14 @@ app.listen(process.env.PORT)
  * after getting access token the callback URL will redifrect to client app
  * */
 
-app.get('/login', (req, res) => {
-
-    var scope = 'user-read-private user-read-email user-top-read user-follow-read user-library-read playlist-modify-private playlist-modify-public';
+app.get('/spotify-login', (req, res) => {
+    var scope = 'user-read-private user-read-email user-top-read user-follow-read user-library-read playlist-modify-private playlist-modify-public user-read-playback-state';
     res.redirect(process.env.AUTHORIZATION + querystring.stringify({
         response_type: 'code',
         client_id: process.env.CLIENT_ID,
         redirect_uri: process.env.REDIRECT_URI,
-        scope:scope
+        scope:scope,
+        show_dialog: true
     }))
 
 })
@@ -58,10 +59,13 @@ app.get('/callback', (req, res) => {
         ).then((data) => {
 
             let response = data.data
-            console.log(response.access_token)
+            console.log(response)
            
             // Redirect back to your frontend
             res.redirect("http://localhost:5173/" + '?access_token=' + response.access_token);
+            // res.json({
+            //     token:response.access_token
+            // })
         })
     } catch (error) {
         console.log("error" + error)
