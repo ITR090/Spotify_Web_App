@@ -5,6 +5,7 @@ import checked from '../assets/icons/checked.png'
 import clock from '../assets/icons/clock.png'
 // utils
 import { millisToMinutesAndSeconds } from '../utilities/millisToMinutesAndSeconds'
+import {formatDate} from '../utilities/formatDate'
 
 export default function Album({album}) {
     return (
@@ -15,7 +16,7 @@ export default function Album({album}) {
                 <div className='leading-10'>
                     <span className='capitalize'>{album?.album_type}</span>
                     <h2 className='font-bold text-6xl'>{album?.name}</h2>
-                    <p className='mt-5'>{`${album?.artists[0]?.name} . ${album?.release_date} . ${album?.total_tracks} songs`}</p>
+                    <p className='mt-5'>{`${album?.artists[0]?.name} . ${formatDate(album?.release_date)} . ${album?.total_tracks} songs`}</p>
                 </div>
             </div>
             {/* end */}

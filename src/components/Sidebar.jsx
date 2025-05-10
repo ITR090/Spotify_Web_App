@@ -1,5 +1,6 @@
 import React, { useEffect, useContext, useState } from 'react'
 import { StoreContext } from '../store/ContextStore'
+import {SpotifyContext} from '../store/SpotifyStore'
 // UI
 import DisplayType from '../UI/DisplayType'
 import SecondaryButton from '../UI/Buttons/SecondaryButton'
@@ -15,13 +16,17 @@ export default function Sidebar() {
     //** 
     // calling 3 apis followed albmus followed playlist followed artists
     const ctx = useContext(StoreContext)
+    const sopt = useContext(SpotifyContext)
+
     // get
-    const { data: userSavedAlbums, setFetchedData: setUserSavedAlbums } = useFetch('https://api.spotify.com/v1/me/albums')
-    const { data: followedArtists, setFetchedData: setFollowedArtists } = useFetch('https://api.spotify.com/v1/me/following?type=artist')
-    const { data: playlist, setFetchedData: setPlaylist } = useFetch('https://api.spotify.com/v1/me/playlists') // NEED TO CHANGE
-    
+    //const { data: userSavedAlbums, setFetchedData: setUserSavedAlbums } = useFetch('https://api.spotify.com/v1/me/albums')
+    //const { data: followedArtists, setFetchedData: setFollowedArtists } = useFetch('https://api.spotify.com/v1/me/following?type=artist')
+    //const { data: playlist, setFetchedData: setPlaylist } = useFetch('https://api.spotify.com/v1/me/playlists') // NEED TO CHANGE
+    const userSavedAlbums = sopt.userSavedAlbums
+    const followedArtists = sopt.followedArtists
+    const playlist = sopt.playlist
     // post
-    const { handlePost } = useFetchPost()
+    //const { handlePost } = useFetchPost()
     // state
     const [createPlayListModalState, setCreatePlayListModalState] = useState(false);
     
@@ -38,19 +43,9 @@ export default function Sidebar() {
         data: filters?.followedArtists
     });
     
-    const createPlayList = async () => {
-            const data={
-                "name": "Raghad3",
-                "description": "New playlist description",
-                "public": true
-            }
-           const postedData = await handlePost('https://api.spotify.com/v1/users/4p667cfn1nwx361pghuzs3g1q/playlists',data) 
-           setPlaylist((perData)=>{
-               return{
-                 ...perData,
-                 items: perData.items.concat(postedData)
-               }
-           })
+    const createPlayList = () => {
+       // we need to add user input    
+       sopt.createPlayList('Gaming','my frist play list', true)
     }
 
     const onClickFliter = (filter_type) => {

@@ -1,5 +1,5 @@
 import React, { useEffect, useContext, useState } from 'react'
-import { data, useParams } from 'react-router-dom'
+import { data, useParams, useLocation } from 'react-router-dom'
 // Hooks
 import useFetch from '../hooks/useFetch'
 // context
@@ -9,15 +9,60 @@ import Container from '../UI/Container'
 import Modal from '../UI/Modal'
 // Utils
 import { millisToMinutesAndSeconds } from '../utilities/millisToMinutesAndSeconds'
-
+import { formatDate } from '../utilities/formatDate'
+// componebts
+import Search from '../components/Search'
 
 export default function PlaylistPage() {
 
-    const ctxSpotify = useContext(SpotifyContext)
+    //const sopt = useContext(SpotifyContext)
     const params = useParams()
-    const { data: playlist, errors: playlistErrors } = useFetch(`https://api.spotify.com/v1/playlists/${params.id}?market=SA`)
+
+    const { data: playlist, errors: playlistErrors } = useFetch(`https://api.spotify.com/v1/playlists/${params.id}?market=SA`, params.id)
+    
     if (playlistErrors) {
         return <Modal type='token-expired' open={true} />
+    }
+
+    let userPlayList = playlist?.tracks?.items.length > 0
+
+    // user has playlist
+    const DisplayUserPlayList = () => {
+        return (<div className='mt-10'>
+            <div className='text-white text-sm font-normal'>
+                <div className="grid grid-cols-12 gap-1 items-center px-4 py-3 border-b">
+                    <div className='flex items-center col-span-3'>
+                        <div className="w-10 text-gray-400">#</div>
+                        <div className="font-semibold text-gray-300">Title</div>
+                    </div>
+                    <div className="col-span-3 text-gray-300">Album</div>
+                    <div className="col-span-3 text-gray-300">Date added</div>
+                    <div className="col-span-3 text-gray-300 text-right pr-4">Duration</div>
+                </div>
+            </div>
+            <div className='mt-5'>
+                {playlist?.tracks?.items.map((track, index) =>
+                    <div key={index + 1} className='grid grid-cols-12 gap-1 items-center px-4 py-3 hover:bg-light-gray-hover  rounded-lg'>
+                        <div className='flex items-center col-span-3'>
+                            <div className='w-10 font-medium'>{index + 1}</div>
+                            <img className='rounded-xl' src={track?.track?.album?.images[2]?.url} />
+                        </div>
+                        <p className='col-span-3 font-normal hover:underline'>{track?.track?.album.name}</p>
+                        <p className='col-span-3 font-normal'>{formatDate(track?.added_at)}</p>
+                        <p className='col-span-3 font-normal text-right pr-4'>{millisToMinutesAndSeconds(track?.track?.duration_ms)}</p>
+                    </div>)}
+            </div>
+        </div>)
+    }
+
+    // user dose not have playlist
+    const AddToPlayList = () => {
+        return (
+            <div className='text-2xl  mt-10'>
+                <h1 className='font-bold my-2'>Let's find something for your playlist</h1>
+                <Search/>
+            </div>
+        )
     }
 
     return (
@@ -34,34 +79,8 @@ export default function PlaylistPage() {
             {/* end */}
 
             {/* traks */}
-
-            <div className='mt-10'>
-                <div className='flex justify-between items-center gap-3 mb-3'>
-                    <div>
-                        <span className='text-light-gray mr-2'>#</span>
-                        <span className='text-light-gray'>Title</span>
-                    </div>
-                    {/* <div>
-                        <img src={clock} />
-                    </div> */}
-                </div>
-                <hr />
-                <div className='flex-col mt-5'>
-                    {playlist?.tracks?.items.map((track, index) =>
-                        <div key={index + 1} className='flex justify-between items-center hover:bg-light-gray-hover p-2 rounded-lg'>
-                            <div className='flex justify-end items-center gap-3'>
-                                <p className='text-sm font-medium'>{index + 1}</p>
-                                <img src={track?.track?.album?.images[2]?.url} />
-                                <h6 className='text-sm font-medium hover:underline'>{track?.track?.name}</h6>
-                                <p className='text-sm font-normal hover:underline'>{track?.track?.album.name}</p>
-                                <p>{track?.added_at}</p>
-                                <p>{millisToMinutesAndSeconds(track?.track?.duration_ms)}</p>
-                            </div>
-                            {/* {track?.track.map(song => <span className='text-light-gray font-medium hover:underline'>{song?.name}</span>)} */}
-                        </div>)}
-                </div>
-
-            </div>
+            {userPlayList && <DisplayUserPlayList />}
+            {!userPlayList && <AddToPlayList />}
         </Container>
     )
 }

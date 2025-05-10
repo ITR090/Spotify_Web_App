@@ -7,12 +7,16 @@ import { StoreContext } from '../store/ContextStore'
 import { SpotifyContext } from '../store/SpotifyStore'
 // Hooks
 import useFetch from '../hooks/useFetch'
+// UI
+import SearchBar from '../UI/SearchBar'
+
 
 export default function NavBar({}) {
 
 
     const ctx = useContext(StoreContext)
     const ctxSpotify = useContext(SpotifyContext)
+    const sopt = useContext(SpotifyContext)
     
     const {data : userProfile} = useFetch('https://api.spotify.com/v1/me') 
    
@@ -26,20 +30,18 @@ export default function NavBar({}) {
         <div className="flex flex-wrap items-center justify-between p-4">
 
             <div className='flex items-center'>
-                <img src={Spotify_Logo} className='w-7 h-7'/>
+                <img src={Spotify_Logo} className='w-10 h-10'/>
             </div>
             <div className="flex items-center">
                 <Link to={'/'} className="mx-2">
-                       <img src={Home_Logo}  className='w-7 h-7 hover:bg-[#2a2a2a] rounded-full' />
+                       <img src={Home_Logo}  className='w-10 h-10 bg-[#2a2a2a] rounded-full p-2' />
                 </Link>
-                <div className="rounded-2xl">
-                    <input type="search" id="search-navbar" className="w-96 p-2 pl-6  rounded-2xl" placeholder="What you want to play?" />
-                </div>  
+                <SearchBar placeholder="What you want to play today?"/>
             </div>
 
             <div className="flex items-center">
                     {ctx.authenticated && <>
-                        <img src={(ctx?.authenticated && userProfile) ? userProfile?.images[0]?.url : null} className='rounded-full w-9' alt=""/>
+                        <img src={(ctx?.authenticated && userProfile) ? userProfile?.images[0]?.url : null} className='rounded-full w-10 h-10' alt=""/>
                     </>
                     }
             </div>

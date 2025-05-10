@@ -2,17 +2,22 @@ import React, { useState } from 'react'
 import edit from '../assets/icons/edit.png'
 // UI
 import SecondaryButton from './Buttons/SecondaryButton'
-import { NavLink, redirect,Navigate,useNavigate  } from 'react-router-dom'
+import { useNavigate  } from 'react-router-dom'
 
 
 export default function Modal({ type, open, onClose, onClick }) {
 
 
   let navigate = useNavigate();
+
+  const handleLoginButton =()=>{
+    localStorage.removeItem("userToken")
+    navigate('/login')
+  }
   const handleCloseModle = () => {
     onClose(false)
   }
-
+  
   switch (type) {
 
     case 'create-playlist':
@@ -23,10 +28,6 @@ export default function Modal({ type, open, onClose, onClick }) {
             <p onClick={handleCloseModle} className='text-lg font-bold'>X</p>
           </div>
           <div className=' my-3 flex justify-start items-stretch gap-3'>
-            <div className='rounded-lg'>
-              {/* <img src={edit} className='w-60 bg-[#3e3e3e] rounded-lg' /> */}
-              <input type="file" name="" id="file-input" />
-            </div>
             <div className='w-100'>
               <input type="text" className='block mb-2 rounded-lg w-60 p-2 bg-[#3e3e3e]' placeholder='Name' />
               <textarea name="" id="" className='p-2 block rounded-lg w-60 bg-[#3e3e3e] h-auto' placeholder='Add an optional description' ></textarea>
@@ -41,13 +42,22 @@ export default function Modal({ type, open, onClose, onClick }) {
         <div className={`fixed top-0 right-0 left-0 z-50 inset-0 flex justify-center items-center transition-colors ${open ? "visible bg-black/80" : "invisible"}`}>
           <div className='bg-[#232323] p-3 rounded-lg'>
             <h6 className='text-2xl font-bold capitalize my-4'>Your token has expired please login</h6>
-            <SecondaryButton clickFun={()=>{
-              localStorage.removeItem("userToken")
-              return <Navigate to='/login'/>
-            }}>Login</SecondaryButton>
+            <SecondaryButton clickFun={handleLoginButton}>Login</SecondaryButton>
           </div>
         </div>
       )
+
+    case 'delete-playlist': 
+       return(
+        <div className={`fixed top-0 right-0 left-0 z-50 inset-0 flex justify-center items-center transition-colors ${open ? "visible bg-black/80" : "invisible"}`}>
+          <div className='bg-[#232323] p-3 rounded-lg'>
+            <h6 className='text-2xl font-bold capitalize my-4'>Delete from Your Library?</h6>
+            <p>This will delete Fav songs from Your Library.</p>
+            <SecondaryButton>Delete</SecondaryButton>
+            <SecondaryButton>Cancel</SecondaryButton>
+          </div>
+        </div>
+       ) 
   }
 
 

@@ -11,7 +11,7 @@ export default function useFetchPost() {
 
     const handlePost=  async (url,data)=> {
     //  ctx.authenticated && ctx.token
-    let token = localStorage.getItem('userToken').token
+    let token = localStorage.getItem('userToken')
         if(token){
            try {
 
