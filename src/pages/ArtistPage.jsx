@@ -17,6 +17,8 @@ import { SwiperSlide } from 'swiper/react';
 // Import Swiper styles
 import 'swiper/css';
 import 'swiper/css/navigation';
+// compone
+import TracksList from '../components/TracksList'
 
 
 export default function ArtistPage() {
@@ -26,6 +28,7 @@ export default function ArtistPage() {
     const { data: topTracks, errors: errorsTopTracks } = useFetch(`https://api.spotify.com/v1/artists/${params.id}/top-tracks?market=SA`, params.id)
     const { data: albmus, errors: albmusErrors } = useFetch(`https://api.spotify.com/v1/artists/${params.id}/albums?include_groups=album&market=US`, params.id)
 
+
     if (errorsArtist && errorsTopTracks && albmusErrors) {
         return <Modal type='token-expired' open={true} />
     }
@@ -33,41 +36,28 @@ export default function ArtistPage() {
     return (
         <Container>
             {/* start */}
-            <div className='leading-10 flex items-center gap-4'>
-                <div>
-                    <img src={artist?.images[1]?.url} className='rounded-full w-56' />
-                </div>
-                <div>
-                    <div className='flex gap-2 items-center'>
-                        <span><img src={verified} width={32} height={32} /></span>
-                        <span className='text-lg'>Verified Artist</span>
-                    </div>
-                    <h4 className='capitalize text-5xl font-bold'>{artist?.name}</h4>
-                    <p className='font-medium'>{artist?.followers?.total?.toLocaleString('en-US')} followers</p>
-                    <button className='border-2 border-solid text-lg rounded-full p-1 mr-2 w-full'>Following</button>
+            <div className='relative w-full h-80 rounded-xl overflow-hidden'>
+                <img src={artist?.images[0]?.url} className='absolute inset-0 w-full h-full object-cover ' />
+                {/* Dark Bottom Gradient */}
+                <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/70" />
+                {/* Text Overlay */}
+                <div className="absolute bottom-6 left-6 text-white">
+                    {/* <div className="flex items-center gap-2 mb-2">
+                        <span className="text-sm font-medium opacity-80">Verified Artist</span>
+                    </div> */}
+                    <h1 className="lg:text-6xl md:font-medium sm:font-light md:text-base font-extrabold">{artist?.name}</h1>
+                    <p className="mt-2 text-sm opacity-80">
+                        {artist?.followers?.total?.toLocaleString('en-US')} followers
+                    </p>
                 </div>
             </div>
             {/* end */}
+
             {/* start */}
             <div className='mt-5'>
                 <h3 className='capitalize text-2xl font-bold'>Popular</h3>
                 <div className='flex-col mt-5'>
-                    {topTracks?.tracks?.map((track, index) =>
-                        <div key={track?.id} className='flex justify-between items-center hover:bg-light-gray-hover p-2 rounded-lg'>
-                            <div>
-                                <div>
-
-                                    <div className='flex items-center gap-3'>
-                                        <p className='font-medium'>{index + 1}</p>
-                                        <h6 className='font-medium hover:underline'>{track?.name}</h6>
-                                    </div>
-                                </div>
-
-                            </div>
-                            <div>
-                                <p className='text-light-gray font-medium'>{millisToMinutesAndSeconds(track?.duration_ms)}</p>
-                            </div>
-                        </div>)}
+                    {topTracks?.tracks?.map((track) => <TracksList track={track}/>)}
                 </div>
             </div>
             {/* end */}
@@ -76,15 +66,15 @@ export default function ArtistPage() {
 
             <div className='mt-5'>
                 <h3 className='capitalize text-2xl font-bold mb-5'>Discography</h3>
-                <SecondaryButton>Albums</SecondaryButton>
-                <SecondaryButton>Singles and EPs</SecondaryButton>
+                <SecondaryButton type="button">Albums</SecondaryButton>
+                <SecondaryButton type="button">Singles and EPs</SecondaryButton>
 
                 <div className='mt-5'>
                     <Slider>
-                        {albmus && albmus.items.map((albmu => <SwiperSlide style={{ width: '12%', height: 'auto' }}>
+                        {albmus && albmus.items.map((albmu => <SwiperSlide style={{ width: 'auto', height: 'auto' }}>
                             <Link to={`/album/${albmu.id}`}>
                                 <div key={albmu.id} className='rounded-lg hover:bg-light-gray-hover p-1'>
-                                    <img src={albmu?.images[0].url} className='rounded-lg w-48' />
+                                    <img src={albmu?.images[0].url} className='rounded-lg w-50' />
                                     <h5 className='mt-3'>{albmu.name}</h5>
                                 </div>
                             </Link>

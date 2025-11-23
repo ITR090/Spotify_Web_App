@@ -1,4 +1,5 @@
 // Import Swiper React components
+import React from "react"
 import { Swiper, SwiperSlide } from 'swiper/react';
 // Import Swiper styles
 import 'swiper/css';
@@ -10,7 +11,7 @@ export default function Slider({children}) {
   return (
     <Swiper
       slidesPerView='auto'
-      spaceBetween={15}
+      spaceBetween={10}
       freeMode
       centeredSlides
       centeredSlidesBounds

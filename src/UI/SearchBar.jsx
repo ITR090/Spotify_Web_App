@@ -1,4 +1,4 @@
-import { useState, forwardRef, useImperativeHandle,} from 'react';
+import React,{ useState, forwardRef, useImperativeHandle,} from 'react';
 
 const SearchBar = forwardRef(({styles,...props},ref) => {
   const [query, setQuery] = useState('');
@@ -14,7 +14,7 @@ const SearchBar = forwardRef(({styles,...props},ref) => {
           type="search"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className={`w-96 p-2 rounded-md ${styles}`}
+          className={`w-96 p-2 rounded-md bg-black`}
           {...props}
         />
       </div>

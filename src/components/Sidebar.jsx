@@ -1,6 +1,6 @@
 import React, { useEffect, useContext, useState } from 'react'
 import { StoreContext } from '../store/ContextStore'
-import {SpotifyContext} from '../store/SpotifyStore'
+import { SpotifyContext } from '../store/SpotifyStore'
 // UI
 import DisplayType from '../UI/DisplayType'
 import SecondaryButton from '../UI/Buttons/SecondaryButton'
@@ -10,6 +10,7 @@ import useFetch from '../hooks/useFetch'
 import useFetchPost from '../hooks/useFetchPost'
 // ICONS
 import plus from '../assets/icons/plus.png'
+import { Plus } from "lucide-react";
 
 export default function Sidebar() {
 
@@ -29,8 +30,8 @@ export default function Sidebar() {
     //const { handlePost } = useFetchPost()
     // state
     const [createPlayListModalState, setCreatePlayListModalState] = useState(false);
-    
-   
+
+
 
     const filters = {
         playlists: playlist,
@@ -42,10 +43,10 @@ export default function Sidebar() {
         type: "Artists",
         data: filters?.followedArtists
     });
-    
+
     const createPlayList = () => {
-       // we need to add user input    
-       sopt.createPlayList('Gaming','my frist play list', true)
+        // we need to add user input    
+        sopt.createPlayList('Gaming', 'my frist play list', true)
     }
 
     const onClickFliter = (filter_type) => {
@@ -85,12 +86,12 @@ export default function Sidebar() {
         displayCurrectFilter = <DisplayType type='artists' items={followedArtists?.artists?.items} />
     } else {
         displayCurrectFilter = <DisplayType type='albums' items={userSavedAlbums?.items} />
-    } 
+    }
 
-   
+
     return (
         <>
-            <div className='w-1/3 px-8 py-16 bg-main-bg-gray text-white rounded-r-xl overflow-y-auto no-scrollbar'>
+            {/* <div className='w-1/3 px-8 py-16 bg-main-bg-gray text-white rounded-r-xl overflow-y-auto no-scrollbar'>
                 <div className='flex justify-between mb-3'>
                     <span>
                         <span className='ml-1 text-lg font-bold'>Your Library</span>
@@ -114,8 +115,35 @@ export default function Sidebar() {
                 <div className='my-4'>
                     {(currentFilter) && displayCurrectFilter}
                 </div>
+            </div> */}
+
+
+             <div>
+                <div className='flex justify-between'>
+                    <h4 className='font-bold my-3'>
+                        Your Library
+                    </h4>
+                    <SecondaryButton
+                        id='plus'
+                        clickFun={()=>setCreatePlayListModalState(true)}
+                        type='button'
+                        data-modal-target="default-modal" data-modal-toggle="default-modal"
+                    >
+                        <Plus size={24} strokeWidth={1.75}/>
+                    </SecondaryButton>
+                </div>
+
+                <div className='flex'>
+                    <SecondaryButton id='Artists' clickFun={() => onClickFliter('Artists')} type="button">Artists</SecondaryButton>
+                    <SecondaryButton id='Playlist' clickFun={() => onClickFliter('Playlist')} type="button">Playlist</SecondaryButton>
+                    <SecondaryButton id='Albums' clickFun={() => onClickFliter('Albums')} type="button">Albums</SecondaryButton>
+                </div>
+
+                <div className='my-4'>
+                    {(currentFilter) && displayCurrectFilter}
+                </div>
             </div>
-            <Modal type='create-playlist' open={createPlayListModalState}  onClose={setCreatePlayListModalState} onClick={createPlayList} />
+            {/* <Modal type='create-playlist' open={createPlayListModalState} onClose={setCreatePlayListModalState} onClick={createPlayList} /> */}
         </>
     )
 }

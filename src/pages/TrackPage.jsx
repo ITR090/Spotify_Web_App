@@ -31,11 +31,11 @@ export default function TrackPage() {
 
     return (
         <Container>
-            <div className='flex items-center gap-3'>
+            <div className='lg:flex items-center gap-3'>
                 <img src={track?.album?.images[1].url} />
                 <div className=''>
-                    <span>{track?.album?.album_type}</span>
-                    <h5 className='font-bold text-6xl my-5'>{track?.name}</h5>
+                    {/* <span>{track?.album?.album_type}</span> */}
+                    <h5 className='font-bold lg:text-6xl my-5'>{track?.name}</h5>
                     <span>{track?.album?.artists[0]?.name}</span>
                 </div>
             </div>
@@ -44,10 +44,7 @@ export default function TrackPage() {
             <div className='mt-10 flex items-center gap-5'>
                 <div>
                     <img src={play_button} />
-                </div>
-                {/* <div>
-                    <img src={checked} />
-                </div> */}
+                </div>               
             </div>
             {/* end */}
         </Container>

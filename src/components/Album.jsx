@@ -6,6 +6,8 @@ import clock from '../assets/icons/clock.png'
 // utils
 import { millisToMinutesAndSeconds } from '../utilities/millisToMinutesAndSeconds'
 import {formatDate} from '../utilities/formatDate'
+// components
+import TracksList from './TracksList'
 
 export default function Album({album}) {
     return (
@@ -47,7 +49,6 @@ export default function Album({album}) {
                 <div className='flex-col mt-5'>
                     {album?.tracks?.items.map((album, index) =>
                         <div key={album?.id} className='flex justify-between items-center hover:bg-light-gray-hover p-2 rounded-lg'>
-
                             <div>
                                 <div className='flex items-center gap-3'>
                                     <p className='text-xl font-medium'>{index + 1}</p>
@@ -59,7 +60,6 @@ export default function Album({album}) {
                             <div>
                                 <p className='text-light-gray font-medium'>{millisToMinutesAndSeconds(album?.duration_ms)}</p>
                             </div>
-
                         </div>)}
                 </div>
 

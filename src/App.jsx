@@ -1,5 +1,5 @@
 import './App.css'
-import { useContext } from 'react'
+import React ,{ useContext } from 'react'
 import { StoreContextProvider, StoreContext } from './store/ContextStore'
 import { SpotifyContext,SpotifyContextProvider } from './store/SpotifyStore' 
 // route
