@@ -3,14 +3,12 @@ import { StoreContext } from "../store/ContextStore";
 
 
 
-export default function useFetchPost() {
-
-    
+export default function useFetchPost(url) {
 
     const ctx = useContext(StoreContext)
 
-    const handlePost=  async (url,data)=> {
-    //  ctx.authenticated && ctx.token
+    const handlePost=  async (data)=> {
+
     let token = localStorage.getItem('userToken')
         if(token){
            try {

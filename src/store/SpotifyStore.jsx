@@ -1,65 +1,87 @@
 
-import React ,{ createContext,useState } from "react"; 
+import React, { createContext } from "react";
+import axios from 'axios'
 // HOOKS
 import useFetch from '../hooks/useFetch'
-import useFetchPost from '../hooks/useFetchPost' 
-// UI
-import Modal from "../UI/Modal";
-const  SpotifyContext = createContext({
-    spotifyUser:null,
-    saveUserDetaild:()=>{},
-    createPlayList:(playListName, playListDescription,isPublic)=>{},
+import useFetchPost from '../hooks/useFetchPost'
+// API
+import { getToken } from "../Http/APIs";
+
+const SpotifyContext = createContext({
+
 })
 
-const SpotifyContextProvider = (props)=>{
+const SpotifyContextProvider = (props) => {
 
-    const [spotifyUser,setSpotifyUser] = useState(null)
 
-    
     try {
 
-        //get
-        const { data: userSavedAlbums, setFetchedData: setUserSavedAlbums } = useFetch('https://api.spotify.com/v1/me/albums')
-        const { data: followedArtists, setFetchedData: setFollowedArtists } = useFetch('https://api.spotify.com/v1/me/following?type=artist')
-        const { data: playlist, setFetchedData: setPlaylist, errors: playlistErrors } = useFetch('https://api.spotify.com/v1/me/playlists')
-         
-        // post
-        const { handlePost } = useFetchPost()
+        //Get
+        const { data: playlists, setFetchedData: setPlaylist, errors: playlistErrors } = useFetch('https://api.spotify.com/v1/me/playlists')
+        const { data: spotifyUserData, setFetchedData: setSpotifyUserData, errors: spotifyUserErrors } = useFetch('https://api.spotify.com/v1/me')
+        const { data: topTracks, errors: topTracksErr } = useFetch('https://api.spotify.com/v1/me/top/tracks?time_range=long_term&limit=5')
 
-        const saveUserDetaild =(userDetails)=>{
-           setSpotifyUser(userDetails)
-         }
+        // Post
+        const { handlePost } = useFetchPost(`https://api.spotify.com/v1/users/${spotifyUserData?.id}/playlists`)
+        const { handlePost_AddToPlayList } = useFetchPost(`https://api.spotify.com/v1/playlists/{playlist_id}/tracks`)
 
-        const createPlayList= async (playListName, playListDescription,isPublic)=>{
-        const data={
-            "name": playListName,
-            "description": playListDescription,
-            "public": isPublic
+        const getUserDetails = () => {
+            return spotifyUserData;
         }
-        //console.log(data)
-        const postedData = await handlePost('https://api.spotify.com/v1/users/4p667cfn1nwx361pghuzs3g1q/playlists',data)
-        if(postedData){
-            
-            setPlaylist((perData)=>{
-                return{
-                  ...perData,
-                  items: perData.items.concat(postedData)
-                }
-            }) 
+        const getPlaylists = () => {
+            return playlists;
         }
-           
-            }
 
-        const deletePlayList=()=>{}
+        const createPlayList = async (playlistname) => {
+            const data = await handlePost({
+                name: playlistname,
+            })
+            const updatedPlaylists = [...playlists.items, data]
+            setPlaylist({ ...playlists, items: updatedPlaylists });
+
+        }
+
+        const createTopTracksPlayList = async (playlistname) => {
+
+            // Get token
+            const token = getToken()
+            //create playlist
+            const playlist = await handlePost({
+                name: playlistname,
+            })
+
+            let uids = []
+            topTracks.items.forEach(function (track) {
+                uids.push(track.uri)
+            })
+
+            await axios.post(`https://api.spotify.com/v1/playlists/${playlist?.id}/tracks?uris=${uids}`,
+                {},
+                {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    }
+                })
+            const updatedPlaylists = [...playlists.items, playlist]
+            setPlaylist({ ...playlists, items: updatedPlaylists });    
+        }
+
 
         return (
             <SpotifyContext.Provider value={{
-                saveUserDetaild:saveUserDetaild,
-                createPlayList:createPlayList,
-                spotifyUser:spotifyUser,
-                playlist:playlist,
-                followedArtists:followedArtists,
-                userSavedAlbums:userSavedAlbums
+                // feilds
+                playlists: playlists,
+                playlistErr: playlistErrors,
+
+                spotifyUserData: spotifyUserData,
+                spotifyUserErrors: spotifyUserErrors,
+
+                // methods
+                getUserDetails: getUserDetails,
+                getPlaylists: getPlaylists,
+                createPlayList: createPlayList,
+                createTopTracksPlayList: createTopTracksPlayList
             }}>
                 {props.children}
             </SpotifyContext.Provider>
@@ -70,4 +92,4 @@ const SpotifyContextProvider = (props)=>{
     }
 }
 
-export {SpotifyContext,SpotifyContextProvider}
+export { SpotifyContext, SpotifyContextProvider }

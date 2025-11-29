@@ -5,7 +5,7 @@ import { Play } from 'lucide-react';
 import { millisToMinutesAndSeconds } from '../utilities/millisToMinutesAndSeconds'
 
 // top artist tracks
-const TracksList = ({ track }) => {
+const TopTracksList = ({ track }) => {
 
     const [isHovering, setIsHovering] = useState(false);
 
@@ -28,4 +28,4 @@ const TracksList = ({ track }) => {
     )
 }
 
-export default TracksList
+export default TopTracksList

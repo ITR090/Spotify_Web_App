@@ -4,19 +4,11 @@ import { Link, useParams } from 'react-router-dom'
 import Container from '../UI/Container'
 // Hooks
 import useFetch from '../hooks/useFetch'
-// icon
-import verified from '../assets/icons/verified.png'
-// utils
-import { millisToMinutesAndSeconds } from '../utilities/millisToMinutesAndSeconds'
-// UI
-import Slider from '../components/Slider'
 import Modal from '../UI/Modal'
-// Import Swiper React components
-import { SwiperSlide } from 'swiper/react';
 // Import Swiper styles
 import 'swiper/css';
 import 'swiper/css/navigation';
-import SecondaryButton from '../UI/Buttons/SecondaryButton'
+// icons
 import play_button from '../assets/icons/play-button.png'
 import checked from '../assets/icons/checked.png'
 
@@ -31,12 +23,11 @@ export default function TrackPage() {
 
     return (
         <Container>
-            <div className='lg:flex items-center gap-3'>
-                <img src={track?.album?.images[1].url} />
-                <div className=''>
-                    {/* <span>{track?.album?.album_type}</span> */}
-                    <h5 className='font-bold lg:text-6xl my-5'>{track?.name}</h5>
-                    <span>{track?.album?.artists[0]?.name}</span>
+            <div className='lg:flex md:flex items-center gap-3'>
+                <img src={track?.album?.images[1].url} className='w-full sm:w-1/2 md:w-1/3'/>
+                <div>
+                    <h5 className='font-bold md:text-5xl lg:text-6xl sm:text-lg my-5'>{track?.name}</h5>
+                    <span className='md:text-5xl lg:text-6xl sm:text-lg'>{track?.album?.artists[0]?.name}</span>
                 </div>
             </div>
 

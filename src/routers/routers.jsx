@@ -8,7 +8,6 @@ import ErrorPage from '../pages/ErrorPage'
 import AlbumPage from '../pages/AlbumPage'
 import MainPage from '../pages/MainPage'
 import ArtistPage from '../pages/ArtistPage'
-import AccountPage from '../pages/AccountPage'
 import PlaylistPage from '../pages/PlaylistPage'
 import TrackPage from '../pages/TrackPage'
 // utils
@@ -32,10 +31,5 @@ export const routers_definitions2 = createBrowserRouter([
         path:'/login',
         errorElement:<ErrorPage/>,
         element: <PreLoginPage/>
-    },
-    {
-        path:'/account',
-        errorElement:<ErrorPage/>,
-        element:<AccountPage/>
     }
 ])

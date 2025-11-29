@@ -1,5 +1,5 @@
 import React,{ createContext,useState } from "react"; 
-import { getToken } from "../utilities/getAccessToken";
+// import { getToken } from "../utilities/getAccessToken";
  
 //const getAccessTokenSp = await getToken();
 
@@ -8,6 +8,10 @@ import { getToken } from "../utilities/getAccessToken";
     authenticated: false,
     setUserToken: (token) => {},
     setAuthenticated : ()=>{},
+
+    spotifyUserId:null,
+    getUserSpotifyId:()=>{},
+
     //modal state
     modalState:false,
     setModalState:()=>{}
@@ -20,9 +24,15 @@ const StoreContextProvider = (props)=>{
 
     const [modalState, setModalState] = useState(false);
     
+    const [spotifyUserId, setSpotifyUserId] = useState(null)
+    
     const setUserToken = (token)=>{
         setToken(token)
         setAuthenticated(true)
+    }
+
+    const getUserSpotifyId = (userId)=>{
+        setSpotifyUserId(userId)
     }
     return (
         <StoreContext.Provider value={{
@@ -31,7 +41,9 @@ const StoreContextProvider = (props)=>{
             authenticated:authenticated,
             setAuthenticated:setAuthenticated,
             modalState:modalState,
-            setModalState:setModalState
+            setModalState:setModalState,
+            getUserSpotifyId:getUserSpotifyId,
+            spotifyUserId:spotifyUserId
         }}>
             {props.children}
         </StoreContext.Provider>

@@ -8,15 +8,12 @@ import Modal from '../UI/Modal'
 // Hooks
 import useFetch from '../hooks/useFetch'
 // components
-import Album from '../components/Album'
 import AlbumTracks from '../components/AlbumTracks'
 // utils
-import { millisToMinutesAndSeconds } from '../utilities/millisToMinutesAndSeconds'
 import { formatDate } from '../utilities/formatDate'
 // icons
 import play_button from '../assets/icons/play-button.png'
-import checked from '../assets/icons/checked.png'
-import clock from '../assets/icons/clock.png'
+
 
 export default function AlbumPage() {
 

@@ -4,10 +4,6 @@ import { Link, useParams } from 'react-router-dom'
 import Container from '../UI/Container'
 // Hooks
 import useFetch from '../hooks/useFetch'
-// icon
-import verified from '../assets/icons/verified.png'
-// utils
-import { millisToMinutesAndSeconds } from '../utilities/millisToMinutesAndSeconds'
 // UI
 import Slider from '../components/Slider'
 import SecondaryButton from '../UI/Buttons/SecondaryButton'
@@ -17,8 +13,8 @@ import { SwiperSlide } from 'swiper/react';
 // Import Swiper styles
 import 'swiper/css';
 import 'swiper/css/navigation';
-// compone
-import TracksList from '../components/TracksList'
+// Components
+import TopTracksList from '../components/TopTracksList'
 
 
 export default function ArtistPage() {
@@ -42,9 +38,6 @@ export default function ArtistPage() {
                 <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/70" />
                 {/* Text Overlay */}
                 <div className="absolute bottom-6 left-6 text-white">
-                    {/* <div className="flex items-center gap-2 mb-2">
-                        <span className="text-sm font-medium opacity-80">Verified Artist</span>
-                    </div> */}
                     <h1 className="lg:text-6xl md:font-medium sm:font-light md:text-base font-extrabold">{artist?.name}</h1>
                     <p className="mt-2 text-sm opacity-80">
                         {artist?.followers?.total?.toLocaleString('en-US')} followers
@@ -55,9 +48,9 @@ export default function ArtistPage() {
 
             {/* start */}
             <div className='mt-5'>
-                <h3 className='capitalize text-2xl font-bold'>Popular</h3>
+                <h3 className='capitalize text-2xl font-bold'>Popular Tracks</h3>
                 <div className='flex-col mt-5'>
-                    {topTracks?.tracks?.map((track) => <TracksList track={track}/>)}
+                    {topTracks?.tracks?.map((track) => <TopTracksList track={track}/>)}
                 </div>
             </div>
             {/* end */}

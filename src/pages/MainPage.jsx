@@ -1,35 +1,57 @@
-import React, { useContext,useState } from 'react'
-import { StoreContext } from '../store/ContextStore'
+import React, { useContext, useState } from 'react'
+import { SpotifyContext } from '../store/SpotifyStore'
 // UI
 import Container from '../UI/Container'
-import { Link, Navigate} from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import Slider from '../components/Slider'
 // HOOKS
 import useFetch from '../hooks/useFetch'
+import useFetchPost from '../hooks/useFetchPost'
 // Import Swiper React components
 import { SwiperSlide } from 'swiper/react';
 // Import Swiper styles
 import 'swiper/css';
 import 'swiper/css/navigation';
 import Modal from '../UI/Modal'
-
+// Icons
+import { Plus } from 'lucide-react'
+import { Music } from 'lucide-react';
+import { AudioLines } from 'lucide-react';
 
 
 export default function MainPage() {
 
-    const ctx = useContext(StoreContext)
-    const { data: topArtists, errors : topArtistsErr } = useFetch('https://api.spotify.com/v1/me/top/artists?limit=20')
-    const { data: topTracks, errors : topTracksErr } = useFetch('https://api.spotify.com/v1/me/top/tracks?limit=20')
-
+   
+    const sopt = useContext(SpotifyContext)
     
-    if(topArtistsErr && topTracksErr){
-         return <Modal type='token-expired' open={true} />
+    // get calls
+     const { data: topArtists, errors: topArtistsErr } = useFetch('https://api.spotify.com/v1/me/top/artists?limit=20')
+     const { data: topTracks, errors: topTracksErr } = useFetch('https://api.spotify.com/v1/me/top/tracks?time_range=long_term&limit=5')
+
+    const playlists = sopt.playlists
+    const playlistErr = sopt.playlistErr    
+
+   
+    const [createPlayListModalState, setCreatePlayListModalState] = useState(false);
+
+    if (topArtistsErr && topTracksErr && playlistErr) {
+        return <Modal type='token-expired' open={true} />
+    }
+
+    const onClickCreatePlayList = () => {
+        setCreatePlayListModalState(!createPlayListModalState);
+        sopt.createPlayList("My Playlist from Main Page");
+       
+    }
+
+    const onClickCreateTopPlayList=()=>{
+        sopt.createTopTracksPlayList("My top tracks")
     }
 
     return (
         <Container>
 
-            <h5 className='my-6 text-xl font-bold capitalize'>Your favorite artists</h5>
+            <h5 className='my-6 mx-3 text-xl font-bold capitalize'>Your favorite artists</h5>
             <Slider>
                 {topArtists && topArtists.items?.map((artist) =>
                     <SwiperSlide key={artist?.id} style={{ width: 'auto', height: 'auto' }}>
@@ -44,8 +66,9 @@ export default function MainPage() {
                 )}
             </Slider>
 
-            <h5 className='my-6 text-xl font-bold capitalize'>Recently played</h5>
 
+
+            <h5 className='my-6 mx-3 text-xl font-bold capitalize'>Your Top Tracks</h5>
             <Slider>
                 {topTracks && topTracks.items?.map((track) =>
                     <SwiperSlide key={track?.id} style={{ width: 'auto', height: 'auto' }}>
@@ -58,6 +81,54 @@ export default function MainPage() {
                     </SwiperSlide>
                 )}
             </Slider>
+
+
+            <h5 className='my-6 mx-3 text-xl font-bold capitalize'>Your PlayLists</h5>
+            <Slider>
+                {playlists && playlists.items?.map((playlist, index) =>
+                    <SwiperSlide key={playlist?.id} style={{ width: 'auto', height: 'auto' }}>
+                        <Link to={`/playlist/${playlist.id}`}>
+                            <div key={playlist.id} className='rounded-lg p-1'>
+                                {playlist?.images &&<img src={playlist?.images[0]?.url} className='rounded-lg w-48' />}
+                                {!playlist?.images && <Music className='md:w-1/1 lg:w-1/1 h-full bg-gray-700'/>}
+                                <h5 className='mt-3 line-clamp-1'>{playlist.name}</h5>
+                            </div>
+                        </Link>
+                    </SwiperSlide>
+                )}
+                {/* {playlists && playlists.items.length > 0 &&
+                    <SwiperSlide style={{ width: 'auto', height: 'auto' }}>
+                        <div onClick={onClickcreatePlayList} className="rounded-lg cursor-pointer flex items-center justify-center w-48 h-48 bg-gray-700 hover:bg-gray-600">
+                            <span className="text-4xl font-bold">+</span>
+                        </div>
+                    </SwiperSlide>
+                } */}
+            </Slider>
+
+
+            <h5 className='my-6 mx-3 text-xl font-bold capitalize'><Plus style={{ display :"inline-block"}}/> Create</h5>
+            <Slider>
+                    <SwiperSlide style={{ width: 'auto', height: 'auto' }}>
+                        <div className="p-2 rounded-lg cursor-pointer flex items-center justify-center gap-4 w-48 h-48 bg-gray-700 hover:bg-gray-600">
+                            <Music size={52}/>
+                            <div onClick={onClickCreatePlayList}>
+                              <span className="text-md font-bold">PlayList</span>
+                              <p className='text-sm'>Create a playlist with songs you like</p>
+                            </div>
+                        </div>
+                    </SwiperSlide>
+                    <SwiperSlide style={{ width: 'auto', height: 'auto' }}>
+                        <div className="p-2 rounded-lg cursor-pointer flex items-center justify-center gap-4 w-48 h-48 bg-gray-700 hover:bg-gray-600">
+                            <AudioLines size={52}/>
+                            <div onClick={onClickCreateTopPlayList}>
+                                <span className="text-md font-bold">Top Tracks</span>
+                                <p className='text-sm'>Create Top songs playlist</p>
+                            </div>
+                        </div>
+                    </SwiperSlide>
+            </Slider>
+
+            {<Modal  type='create-playlist' open={createPlayListModalState} onClose={setCreatePlayListModalState} onClick={onClickCreatePlayList} />}
 
         </Container>
     )
