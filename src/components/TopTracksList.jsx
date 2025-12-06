@@ -2,7 +2,7 @@ import React, { useState } from "react"
 // icon
 import { Play } from 'lucide-react';
 // utils
-import { millisToMinutesAndSeconds } from '../utilities/millisToMinutesAndSeconds'
+import { millisToMinutesAndSeconds } from '../utilities/helpers'
 
 // top artist tracks
 const TopTracksList = ({ track }) => {

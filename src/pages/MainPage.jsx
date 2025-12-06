@@ -6,7 +6,6 @@ import { Link } from 'react-router-dom'
 import Slider from '../components/Slider'
 // HOOKS
 import useFetch from '../hooks/useFetch'
-import useFetchPost from '../hooks/useFetchPost'
 // Import Swiper React components
 import { SwiperSlide } from 'swiper/react';
 // Import Swiper styles
@@ -21,31 +20,28 @@ import { AudioLines } from 'lucide-react';
 
 export default function MainPage() {
 
-   
-    const sopt = useContext(SpotifyContext)
+    // get
+    const {playlists, playlistErr} = useContext(SpotifyContext)
+    const {topArtists,topArtistsErr} = useContext(SpotifyContext)
+    const {topTracks,topTracksErr} = useContext(SpotifyContext)
     
-    // get calls
-     const { data: topArtists, errors: topArtistsErr } = useFetch('https://api.spotify.com/v1/me/top/artists?limit=20')
-     const { data: topTracks, errors: topTracksErr } = useFetch('https://api.spotify.com/v1/me/top/tracks?time_range=long_term&limit=5')
-
-    const playlists = sopt.playlists
-    const playlistErr = sopt.playlistErr    
-
-   
+    const {createPlayList} = useContext(SpotifyContext)
+    const {createTopTracksPlayList} = useContext(SpotifyContext)
+       
     const [createPlayListModalState, setCreatePlayListModalState] = useState(false);
-
+    
     if (topArtistsErr && topTracksErr && playlistErr) {
         return <Modal type='token-expired' open={true} />
     }
 
     const onClickCreatePlayList = () => {
-        setCreatePlayListModalState(!createPlayListModalState);
-        sopt.createPlayList("My Playlist from Main Page");
+        //setCreatePlayListModalState(!createPlayListModalState);
+        createPlayList("My PlayList")
        
     }
 
     const onClickCreateTopPlayList=()=>{
-        sopt.createTopTracksPlayList("My top tracks")
+        createTopTracksPlayList("My top tracks")
     }
 
     return (
@@ -81,32 +77,26 @@ export default function MainPage() {
                     </SwiperSlide>
                 )}
             </Slider>
-
-
+           
             <h5 className='my-6 mx-3 text-xl font-bold capitalize'>Your PlayLists</h5>
             <Slider>
                 {playlists && playlists.items?.map((playlist, index) =>
                     <SwiperSlide key={playlist?.id} style={{ width: 'auto', height: 'auto' }}>
-                        <Link to={`/playlist/${playlist.id}`}>
+                        <Link to={`/playlist/${playlist.id}`} >
                             <div key={playlist.id} className='rounded-lg p-1'>
-                                {playlist?.images &&<img src={playlist?.images[0]?.url} className='rounded-lg w-48' />}
-                                {!playlist?.images && <Music className='md:w-1/1 lg:w-1/1 h-full bg-gray-700'/>}
+                                {playlist?.images?.[0] 
+                                    ?<img src={`${playlist?.images[0]?.url}`} className='rounded-lg w-48' /> 
+                                    :<Music className='w-full h-48 bg-gray-700'/>
+                                }
                                 <h5 className='mt-3 line-clamp-1'>{playlist.name}</h5>
                             </div>
                         </Link>
                     </SwiperSlide>
                 )}
-                {/* {playlists && playlists.items.length > 0 &&
-                    <SwiperSlide style={{ width: 'auto', height: 'auto' }}>
-                        <div onClick={onClickcreatePlayList} className="rounded-lg cursor-pointer flex items-center justify-center w-48 h-48 bg-gray-700 hover:bg-gray-600">
-                            <span className="text-4xl font-bold">+</span>
-                        </div>
-                    </SwiperSlide>
-                } */}
             </Slider>
 
 
-            <h5 className='my-6 mx-3 text-xl font-bold capitalize'><Plus style={{ display :"inline-block"}}/> Create</h5>
+            <h5 className='my-6 mx-3 text-xl font-bold capitalize'><Plus style={{ display :"inline-block"}}/>Create</h5>
             <Slider>
                     <SwiperSlide style={{ width: 'auto', height: 'auto' }}>
                         <div className="p-2 rounded-lg cursor-pointer flex items-center justify-center gap-4 w-48 h-48 bg-gray-700 hover:bg-gray-600">

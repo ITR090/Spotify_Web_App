@@ -25,7 +25,6 @@ export default function Search() {
         const value = searchRef.current?.getValue();
         const selected = dropdownRef.current.getValue();
         const results = await SearchSpotLibrary(`https://api.spotify.com/v1/search?q=${value}&type=${selected.value}&market=US`)
-        console.log(results)
       };
 
     return (

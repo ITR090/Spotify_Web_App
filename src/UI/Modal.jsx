@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
-import edit from '../assets/icons/edit.png'
+// import edit from '../assets/icons/edit.png'
 // UI
 import SecondaryButton from './Buttons/SecondaryButton'
 import { useNavigate } from 'react-router-dom'
 // icons
 import { X } from 'lucide-react';
+
 
 export default function Modal({ type, open, onClose, onClick, children, ...props }) {
 

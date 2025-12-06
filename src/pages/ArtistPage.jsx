@@ -50,7 +50,7 @@ export default function ArtistPage() {
             <div className='mt-5'>
                 <h3 className='capitalize text-2xl font-bold'>Popular Tracks</h3>
                 <div className='flex-col mt-5'>
-                    {topTracks?.tracks?.map((track) => <TopTracksList track={track}/>)}
+                    {topTracks?.tracks?.map((track) => <TopTracksList key={track.id} track={track}/>)}
                 </div>
             </div>
             {/* end */}
@@ -59,12 +59,12 @@ export default function ArtistPage() {
 
             <div className='mt-5'>
                 <h3 className='capitalize text-2xl font-bold mb-5'>Discography</h3>
-                <SecondaryButton type="button">Albums</SecondaryButton>
-                <SecondaryButton type="button">Singles and EPs</SecondaryButton>
+                {/* <SecondaryButton type="button">Albums</SecondaryButton>
+                <SecondaryButton type="button">Singles and EPs</SecondaryButton> */}
 
                 <div className='mt-5'>
                     <Slider>
-                        {albmus && albmus.items.map((albmu => <SwiperSlide style={{ width: 'auto', height: 'auto' }}>
+                        {albmus && albmus.items.map((albmu => <SwiperSlide key={albmu.id} style={{ width: 'auto', height: 'auto' }}>
                             <Link to={`/album/${albmu.id}`}>
                                 <div key={albmu.id} className='rounded-lg hover:bg-light-gray-hover p-1'>
                                     <img src={albmu?.images[0].url} className='rounded-lg w-50' />

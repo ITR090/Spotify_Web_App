@@ -34,7 +34,7 @@ export default function useFetchPost(url) {
                 return await response.json();
             }
            } catch (error) {
-              console.log("error: "+error.status)
+              //console.log(error)
            }
         }
     }

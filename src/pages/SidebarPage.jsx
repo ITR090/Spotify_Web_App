@@ -6,19 +6,16 @@ import SecondaryButton from '../UI/Buttons/SecondaryButton'
 // Hooks
 import useFetch from '../hooks/useFetch'
 
-
 export default function Sidebar() {
 
 
-    const sopt = useContext(SpotifyContext)
-
-    // calling 3 apis followed albmus followed playlist followed artists
-    const { data: followedArtists, errors: followedArtistsErrors} = useFetch('https://api.spotify.com/v1/me/following?type=artist')
-    const { data: userSavedAlbums, errors :userSavedAlbumsErrors } = useFetch('https://api.spotify.com/v1/me/albums') 
-    const playlist = sopt.getPlaylists()
-
+    const {playlists, playlistErr} = useContext(SpotifyContext)
+    const {followedArtists, followedArtistsErrors} = useContext(SpotifyContext)
+    const {userSavedAlbums, userSavedAlbumsErrors} = useContext(SpotifyContext)
+    
+    
     const filters = {
-        playlists: playlist,
+        playlists: playlists,
         followedArtists: followedArtists,
         userSavedAlbums: userSavedAlbums,
     }
@@ -52,7 +49,6 @@ export default function Sidebar() {
                 })
                 return;
             default:
-                console.log('default case');
                 return;
         }
     }
@@ -61,7 +57,7 @@ export default function Sidebar() {
     let displayCurrectFilter;
 
     if (currentFilter.type == 'Playlist') {
-        displayCurrectFilter = <DisplayType type='playlists' items={playlist?.items} />
+        displayCurrectFilter = <DisplayType type='playlists' items={playlists?.items} />
     } else if (currentFilter.type == 'Artists') {
         displayCurrectFilter = <DisplayType type='artists' items={followedArtists?.artists?.items} />
     } else {

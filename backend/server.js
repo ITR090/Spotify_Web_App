@@ -28,7 +28,6 @@ app.listen(process.env.PORT)
  * */
 
 app.get('/spotify-login', (req, res) => {
-    console.log('Login endpoint hit');
     var scope = 'user-read-private user-read-email user-top-read user-follow-read user-library-read playlist-modify-private playlist-modify-public user-read-playback-state';
     res.redirect(process.env.AUTHORIZATION + querystring.stringify({
         response_type: 'code',
@@ -60,8 +59,6 @@ app.get('/callback', (req, res) => {
         ).then((data) => {
 
             let response = data.data
-            console.log(response)
-           
             // Redirect back to your frontend
             res.redirect("http://localhost:5173/" + '?access_token=' + response.access_token);
             // res.json({

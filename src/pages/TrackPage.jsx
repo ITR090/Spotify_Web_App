@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 // UI
 import Container from '../UI/Container'
 // Hooks
@@ -9,8 +9,8 @@ import Modal from '../UI/Modal'
 import 'swiper/css';
 import 'swiper/css/navigation';
 // icons
-import play_button from '../assets/icons/play-button.png'
-import checked from '../assets/icons/checked.png'
+import play_button from '../assets/play-button.png'
+import checked from '../assets/checked.png'
 
 export default function TrackPage() {
 
@@ -18,7 +18,7 @@ export default function TrackPage() {
     const { data: track, errors: trackErrors } = useFetch(`https://api.spotify.com/v1/tracks/${params.id}?market=US`, params.id)
     
     if(trackErrors){
-             return <Modal type='token-expired' open={true} />
+        return <Modal type='token-expired' open={true} />
     }
 
     return (

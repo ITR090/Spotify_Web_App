@@ -8,16 +8,13 @@ import { SpotifyContext } from '../store/SpotifyStore'
 import Container from '../UI/Container'
 import Modal from '../UI/Modal'
 // Utils
-import { millisToMinutesAndSeconds } from '../utilities/millisToMinutesAndSeconds'
-import { formatDate } from '../utilities/formatDate'
+import { formatDate,millisToMinutesAndSeconds } from '../utilities/helpers'
 // icon
 import { Music } from 'lucide-react'
 
 export default function PlaylistPage() {
 
-    //const sopt = useContext(SpotifyContext)
     const params = useParams()
-
     const { data: playlist, errors: playlistErrors } = useFetch(`https://api.spotify.com/v1/playlists/${params.id}?market=SA`, params.id)
     
     if (playlistErrors) {

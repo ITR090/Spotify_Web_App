@@ -1,6 +1,5 @@
 import React, {useContext} from 'react'
-import Spotify_Logo from '../assets/icons/Spotify_logo.png'
-import Home_Logo from '../assets/icons/icons8-home-48.png'
+import Spotify_Logo from '../assets/Spotify_logo.png'
 import { Link } from 'react-router-dom'
 // contexts
 import { StoreContext } from '../store/ContextStore'
@@ -33,9 +32,9 @@ export default function NavBar({ }) {
             </div>
             <div className="navbar-center hidden lg:flex">
                 <div className="flex items-center">
-                    <Link to={'/'} className="mx-2">
+                    {/* <Link to={'/'} className="mx-2">
                         <img src={Home_Logo} className='w-10 h-10 rounded-full p-2' />
-                    </Link>
+                    </Link> */}
                     {/* <SearchBar placeholder="What you want to play today?" /> */}
                 </div>
             </div>

@@ -1,7 +1,4 @@
 import React,{ createContext,useState } from "react"; 
-// import { getToken } from "../utilities/getAccessToken";
- 
-//const getAccessTokenSp = await getToken();
 
  const  StoreContext = createContext({
     token: null,

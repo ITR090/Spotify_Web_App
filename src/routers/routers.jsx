@@ -10,15 +10,14 @@ import MainPage from '../pages/MainPage'
 import ArtistPage from '../pages/ArtistPage'
 import PlaylistPage from '../pages/PlaylistPage'
 import TrackPage from '../pages/TrackPage'
-// utils
-import { checkUserToken } from '../utilities/checkUserToken'
+
 
 export const routers_definitions2 = createBrowserRouter([   
     {
         path:'/',
         element: <Layout/>,
         errorElement:<ErrorPage/>,
-        // loader : checkUserToken,
+        // loader : 
         children:[
             {path:'/',  element: <MainPage/>},
             {path:'/album/:id' , element:<AlbumPage/>},

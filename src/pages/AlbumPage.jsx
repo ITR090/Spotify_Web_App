@@ -10,10 +10,10 @@ import useFetch from '../hooks/useFetch'
 // components
 import AlbumTracks from '../components/AlbumTracks'
 // utils
-import { formatDate } from '../utilities/formatDate'
+import { formatDate } from '../utilities/helpers'
 // icons
-import play_button from '../assets/icons/play-button.png'
-
+import play_button from '../assets/play-button.png'
+// import checked from '../assets/checked.png'
 
 export default function AlbumPage() {
 
@@ -25,6 +25,7 @@ export default function AlbumPage() {
     if (albmuError) {
         return <Modal type='token-expired' open={true} />
     }
+    
 
     return (
         <Container>
@@ -48,21 +49,21 @@ export default function AlbumPage() {
                 </div>
                 {/* <div>
                     <img src={checked} />
-                </div> */}
+                </div>  */}
             </div>
             {/* end */}
 
             {/* start */}
             <div className='mt-10'>
                 <div className='flex-col mt-5'>
-                    {album?.tracks?.items.map((album) => <AlbumTracks album={album} />)}
+                    {album?.tracks?.items.map((album) => <AlbumTracks key={album?.id} album={album} />)}
                 </div>
             </div>
             {/* end */}
 
             <div className='mt-10'>
                 <p className='text-light-gray'>{album?.release_date}</p>
-                {album?.copyrights.map(copyright => <p className='text-light-gray'>{copyright.text}</p>)}
+                {album?.copyrights.map(copyright => <p key={copyright.text} className='text-light-gray'>{copyright.text}</p>)}
             </div>
 
         </Container>
