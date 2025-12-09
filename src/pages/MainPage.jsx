@@ -1,4 +1,5 @@
 import React, { useContext, useState } from 'react'
+import { useNavigate } from 'react-router-dom';
 import { SpotifyContext } from '../store/SpotifyStore'
 // UI
 import Container from '../UI/Container'
@@ -27,6 +28,8 @@ export default function MainPage() {
     
     const {createPlayList} = useContext(SpotifyContext)
     const {createTopTracksPlayList} = useContext(SpotifyContext)
+
+    const navigate = useNavigate();
        
     const [createPlayListModalState, setCreatePlayListModalState] = useState(false);
     
@@ -51,13 +54,13 @@ export default function MainPage() {
             <Slider>
                 {topArtists && topArtists.items?.map((artist) =>
                     <SwiperSlide key={artist?.id} style={{ width: 'auto', height: 'auto' }}>
-                        <Link to={`/artist/${artist.id}`}>
+                        <div onClick={ ()=> navigate(`/artist/${artist.id}`)}>
                             <div key={artist.id} className='rounded-lg hover:bg-light-gray-hover p-1'>
                                 <img src={artist.images[2].url} className='rounded-full w-auto h-auto' />
                                 <h5 className='mt-3'>{artist.name}</h5>
                                 <span className='capitalize'>{artist.type}</span>
                             </div>
-                        </Link>
+                        </div>
                     </SwiperSlide>
                 )}
             </Slider>
