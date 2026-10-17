@@ -5,6 +5,8 @@ import DisplayType from '../UI/DisplayType'
 import SecondaryButton from '../UI/Buttons/SecondaryButton'
 // Hooks
 import useFetch from '../hooks/useFetch'
+// icons
+import { Library } from 'lucide-react'
 
 export default function Sidebar() {
 
@@ -12,8 +14,8 @@ export default function Sidebar() {
     const {playlists, playlistErr} = useContext(SpotifyContext)
     const {followedArtists, followedArtistsErrors} = useContext(SpotifyContext)
     const {userSavedAlbums, userSavedAlbumsErrors} = useContext(SpotifyContext)
-    
-    
+
+
     const filters = {
         playlists: playlists,
         followedArtists: followedArtists,
@@ -66,23 +68,23 @@ export default function Sidebar() {
 
 
     return (
-        <div>             
-                <div className='text-center'>
-                    <h4 className='font-bold my-3'>
+        <div>
+                <div className='flex items-center gap-3 px-2 pt-2 pb-4 text-sp-subdued hover:text-white transition-colors'>
+                    <Library size={24} />
+                    <h4 className='font-bold text-base'>
                         Your Library
                     </h4>
                 </div>
 
-                <div className='flex'>
-                    <SecondaryButton id='Artists' clickFun={() => onClickFliter('Artists')} type="button">Artists</SecondaryButton>
-                    <SecondaryButton id='Playlist' clickFun={() => onClickFliter('Playlist')} type="button">Playlist</SecondaryButton>
-                    <SecondaryButton id='Albums' clickFun={() => onClickFliter('Albums')} type="button">Albums</SecondaryButton>
+                <div className='flex px-2'>
+                    <SecondaryButton id='Artists' active={currentFilter.type == 'Artists'} clickFun={() => onClickFliter('Artists')} type="button">Artists</SecondaryButton>
+                    <SecondaryButton id='Playlist' active={currentFilter.type == 'Playlist'} clickFun={() => onClickFliter('Playlist')} type="button">Playlists</SecondaryButton>
+                    <SecondaryButton id='Albums' active={currentFilter.type == 'Albums'} clickFun={() => onClickFliter('Albums')} type="button">Albums</SecondaryButton>
                 </div>
 
-                <div className='my-4'>
+                <div className='mt-3'>
                     {(currentFilter) && displayCurrectFilter}
-                </div>            
+                </div>
         </div>
     )
 }
-

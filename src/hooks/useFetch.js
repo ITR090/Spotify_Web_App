@@ -18,15 +18,18 @@ export default function useFetch(url) {
             try {
 
                 if (!ctx.token) {
-                    console.log('no token')
-                    let url = new URL(window.location.href)
-                    let token = url.searchParams.get('access_token')
-                    window.history.pushState({}, null, '/')
-                    let localhostToken = localStorage.getItem('userToken')
-                    ctx.setUserToken(token)
-                    if (!localhostToken) {
+                    let pageUrl = new URL(window.location.href)
+                    let token = pageUrl.searchParams.get('access_token')
+                    if (token) {
+                        // fresh login: store the new token and strip it from the address bar
+                        // (only here — otherwise every fetch after a refresh reset the URL to '/')
+                        window.history.replaceState({}, null, '/')
                         localStorage.setItem('userToken', JSON.stringify({ token: token }))
                         ctx.setUserToken(token)
+                    } else {
+                        // page refresh: restore the token saved from the last login
+                        let localhostToken = JSON.parse(localStorage.getItem('userToken'))?.token
+                        if (localhostToken) ctx.setUserToken(localhostToken)
                     }
                 }
                  const token = JSON.parse(localStorage.getItem('userToken')).token

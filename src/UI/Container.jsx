@@ -2,7 +2,6 @@ import React from 'react'
 
 export default function Container({children}) {
   return (
-    // <div className='w-full mx-4 bg-main-bg-gray p-6 rounded-lg overflow-y-auto no-scrollbar'>{children}</div>
-     <div className='h-full mx-4 p-6 rounded-lg bg-gray-800'>{children}</div>
+     <div className='sp-main sp-scroll h-full overflow-y-auto rounded-lg px-4 py-6 md:px-6'>{children}</div>
   )
 }

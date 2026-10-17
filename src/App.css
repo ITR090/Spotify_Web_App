@@ -1,11 +1,53 @@
 @import "tailwindcss";
-@plugin "daisyui";
+@plugin "daisyui" {
+  themes: dark --default;
+}
+
+/* Spotify-flavoured overrides for daisyUI's dark theme */
+@plugin "daisyui/theme" {
+  name: "dark";
+  default: true;
+  prefersdark: true;
+  color-scheme: dark;
+  --color-base-100: #121212;
+  --color-base-200: #1f1f1f;
+  --color-base-300: #2a2a2a;
+  --color-base-content: #ffffff;
+  --color-primary: #1ed760;
+  --color-primary-content: #000000;
+  --color-neutral: #2a2a2a;
+  --color-neutral-content: #ffffff;
+  --radius-box: 0.5rem;
+  --radius-field: 9999px;
+}
+
+/* Spotify design tokens -> Tailwind utilities (bg-sp-base, text-sp-subdued, ...) */
+@theme {
+  --font-sans: "Figtree", "Circular", Inter, system-ui, Helvetica, Arial, sans-serif;
+
+  --color-sp-green: #1ed760;
+  --color-sp-green-hover: #3be477;
+  --color-sp-black: #000000;
+  --color-sp-base: #121212;
+  --color-sp-elevated: #1f1f1f;
+  --color-sp-highlight: #2a2a2a;
+  --color-sp-tinted: rgba(255, 255, 255, 0.07);
+  --color-sp-tinted-hover: rgba(255, 255, 255, 0.1);
+  --color-sp-subdued: #b3b3b3;
+  --color-sp-muted: #6a6a6a;
+
+  /* classes already referenced in the codebase but previously undefined */
+  --color-light-gray: #b3b3b3;
+  --color-light-gray-hover: rgba(255, 255, 255, 0.1);
+  --color-main-bg-white: #ffffff;
+  --color-main-font-black: #000000;
+}
 
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: black;
+  font-family: var(--font-sans);
+  color-scheme: dark;
+  color: #ffffff;
+  background-color: #000000;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -15,6 +57,97 @@
 body {
   margin: 0;
   height: 100vh;
+  background-color: #000000;
 }
 
+::selection {
+  background-color: #1ed760;
+  color: #000000;
+}
 
+/* ---------- Scrollbars (thin, Spotify-like) ---------- */
+.sp-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+}
+.sp-scroll::-webkit-scrollbar {
+  width: 12px;
+}
+.sp-scroll::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.3);
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+.sp-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* ---------- App shell: fixed-height panes that scroll independently ---------- */
+@media (min-width: 1024px) {
+  .sp-drawer > .drawer-side {
+    height: 100%;
+    max-height: 100%;
+    position: relative;
+    top: 0;
+  }
+}
+.sp-drawer > .drawer-content {
+  min-height: 0;
+  height: 100%;
+}
+
+/* Main view: subtle gradient fading into the base colour */
+.sp-main {
+  background: linear-gradient(180deg, #2a2a2a 0, #121212 340px), #121212;
+}
+
+/* Hero header gradient (album / playlist / track pages) */
+.sp-hero {
+  background: linear-gradient(180deg, rgba(83, 83, 83, 0.9) 0%, rgba(40, 40, 40, 0.6) 100%);
+}
+
+/* ---------- Cards ---------- */
+.sp-card {
+  display: block;
+  padding: 12px;
+  border-radius: 8px;
+  background-color: transparent;
+  transition: background-color 0.2s ease;
+}
+.sp-card:hover {
+  background-color: #1f1f1f;
+}
+
+/* Green play button that slides up on card hover */
+.sp-card-play {
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+.group:hover .sp-card-play {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Section headings */
+.sp-section-title {
+  font-size: 1.5rem;
+  line-height: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin: 1.75rem 0 0.75rem;
+}
+
+/* Swiper slides should not clip card shadows */
+.swiper {
+  overflow: visible !important;
+  overflow-x: clip !important;
+}
+
+@keyframes sp-fade-in {
+  from { opacity: 0; transform: scale(0.97); }
+  to { opacity: 1; transform: scale(1); }
+}
+.animate-fadeIn {
+  animation: sp-fade-in 0.18s ease-out;
+}

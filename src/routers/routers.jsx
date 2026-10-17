@@ -10,6 +10,7 @@ import MainPage from '../pages/MainPage'
 import ArtistPage from '../pages/ArtistPage'
 import PlaylistPage from '../pages/PlaylistPage'
 import TrackPage from '../pages/TrackPage'
+import SearchPage from '../pages/SearchPage'
 
 
 export const routers_definitions2 = createBrowserRouter([   
@@ -23,7 +24,8 @@ export const routers_definitions2 = createBrowserRouter([
             {path:'/album/:id' , element:<AlbumPage/>},
             {path:'/artist/:id' , element:<ArtistPage/>},
             {path:'/playlist/:id' , element:<PlaylistPage/>},
-            {path:'/track/:id', element:<TrackPage/>}
+            {path:'/track/:id', element:<TrackPage/>},
+            {path:'/search', element:<SearchPage/>}
         ]
     },
     {

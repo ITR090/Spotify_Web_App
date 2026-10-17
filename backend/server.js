@@ -28,7 +28,14 @@ app.listen(process.env.PORT)
  * */
 
 app.get('/spotify-login', (req, res) => {
-    var scope = 'user-read-private user-read-email user-top-read user-follow-read user-library-read playlist-modify-private playlist-modify-public user-read-playback-state';
+    var scope = [
+        'user-read-private', 'user-read-email', 'user-top-read', 'user-follow-read', 'user-library-read',
+        'playlist-modify-private', 'playlist-modify-public',
+        // DELETE /me/library (removing a playlist from the library)
+        'user-library-modify', 'user-follow-modify',
+        // Web Playback SDK + PUT /me/player/play
+        'streaming', 'user-read-playback-state', 'user-modify-playback-state',
+    ].join(' ');
     res.redirect(process.env.AUTHORIZATION + querystring.stringify({
         response_type: 'code',
         client_id: process.env.CLIENT_ID,
@@ -40,12 +47,26 @@ app.get('/spotify-login', (req, res) => {
 })
 
 
-app.get('/callback', (req, res) => {
+const FRONTEND_URL = "http://localhost:5173"
+
+// send the user back to the login page with a reason instead of leaving the request hanging
+const redirectLoginError = (res, reason) =>
+    res.redirect(`${FRONTEND_URL}/login?` + querystring.stringify({ error: reason }))
+
+app.get('/callback', async (req, res) => {
+
+    // user pressed "Cancel" on Spotify's consent screen (or Spotify returned an error)
+    if (req.query.error) {
+        return redirectLoginError(res, req.query.error)
+    }
 
     let code = req.query.code || null;
+    if (!code) {
+        return redirectLoginError(res, 'missing_code')
+    }
 
     try {
-        axios.post('https://accounts.spotify.com/api/token',
+        const data = await axios.post('https://accounts.spotify.com/api/token',
             querystring.stringify({
                 grant_type: 'authorization_code',
                 code: code,
@@ -55,18 +76,14 @@ app.get('/callback', (req, res) => {
                 'Content-Type': 'application/x-www-form-urlencoded',
                 'Authorization': `Basic ${btoa(`${process.env.CLIENT_ID}:${process.env.CLIENT_SECRET}`)}`
             }
-        }
-        ).then((data) => {
-
-            let response = data.data
-            // Redirect back to your frontend
-            res.redirect("http://localhost:5173/" + '?access_token=' + response.access_token);
-            // res.json({
-            //     token:response.access_token
-            // })
         })
+
+        let response = data.data
+        // Redirect back to your frontend
+        res.redirect(`${FRONTEND_URL}/?access_token=` + response.access_token);
     } catch (error) {
-        console.log("error" + error)
+        console.log("error", error?.response?.data || error.message)
+        redirectLoginError(res, 'token_exchange_failed')
     }
 })
 

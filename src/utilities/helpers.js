@@ -6,14 +6,25 @@ export const getToken = () => {
 
 //  MM DAY YEAR
 export function formatDate(date) {
+    if (!date) return ''
     const Fulldate = new Date(date)
-    const FullYear = Fulldate.toLocaleString('default', { month: 'long' }) + " " + Fulldate.getDay() + " " + Fulldate.getFullYear();
+    if (isNaN(Fulldate)) return ''
+    // Spotify dates are plain "YYYY", "YYYY-MM" or "YYYY-MM-DD" (parsed as UTC), so read
+    // them in UTC to avoid shifting a day back in time zones west of UTC.
+    const month = Fulldate.toLocaleString('default', { month: 'long', timeZone: 'UTC' })
+    const precision = String(date).split('-').length
+    if (precision === 1) return `${Fulldate.getUTCFullYear()}`
+    if (precision === 2) return `${month} ${Fulldate.getUTCFullYear()}`
+    // getUTCDate() = day of month (getDay() was the day of the week).
+    const FullYear = month + " " + Fulldate.getUTCDate() + ", " + Fulldate.getUTCFullYear();
     return FullYear
 }
 
 export function millisToMinutesAndSeconds(millis) {
-    var minutes = Math.floor(millis / 60000);
-    var seconds = ((millis % 60000) / 1000).toFixed(0);
+    // floor to whole seconds (rounding could show "0:60")
+    var totalSeconds = Math.floor((millis || 0) / 1000);
+    var minutes = Math.floor(totalSeconds / 60);
+    var seconds = totalSeconds % 60;
     return minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
 }
 
